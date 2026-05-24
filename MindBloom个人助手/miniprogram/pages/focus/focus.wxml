@@ -1,0 +1,33 @@
+<!-- pages/focus/focus.wxml -->
+<view class="page">
+  <view class="card timer-card">
+    <view class="card-title">⏱️ 温和专注计时</view>
+
+    <!-- 圆形计时器 -->
+    <view class="timer-wrap">
+      <canvas type="2d" id="timerCanvas" class="timer-canvas" bindtouchstart="noop"></canvas>
+      <view class="timer-center">
+        <view class="timer-time">{{displayTime}}</view>
+        <view class="timer-label">{{timerLabel}}</view>
+      </view>
+    </view>
+
+    <!-- 控制按钮 -->
+    <view class="timer-controls">
+      <view class="btn-primary timer-btn" bindtap="toggleTimer">{{btnText}}</view>
+      <view class="btn-outline timer-btn" bindtap="resetTimer">重置</view>
+    </view>
+
+    <!-- 预设时长 -->
+    <view class="presets">
+      <view
+        class="preset-chip {{item.active ? 'active' : ''}}"
+        wx:for="{{presets}}"
+        wx:key="index"
+        bindtap="setTimer"
+        data-min="{{item.min}}"
+        data-index="{{index}}"
+      >{{item.min}} min</view>
+    </view>
+  </view>
+</view>

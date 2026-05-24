@@ -1,0 +1,698 @@
+{
+  "version": "0.1.0",
+  "app": {
+    "name": "MindBloom Agent",
+    "mode": "chat-flow",
+    "icon": "🧠",
+    "icon_background": "#E8F5E9",
+    "description": "MindBloom 神经多样性陪伴 AI Agent"
+  },
+  "workflow": {
+    "conversation_variables": [
+      {
+        "id": "user_id",
+        "type": "text-input",
+        "max_length": 64,
+        "required": true,
+        "label": "用户 ID"
+      },
+      {
+        "id": "user_profile",
+        "type": "json",
+        "label": "用户画像缓存"
+      },
+      {
+        "id": "current_status",
+        "type": "json",
+        "label": "当前状态缓存"
+      }
+    ],
+    "features": {
+      "file_upload": {
+        "image": {
+          "enabled": false
+        }
+      }
+    },
+    "graph": {
+      "nodes": [
+        {
+          "id": "start_1",
+          "type": "start",
+          "data": {
+            "title": "开始",
+            "type": "start",
+            "variables": [
+              {
+                "variable": "sys_user_id",
+                "label": "用户 ID",
+                "type": "text-input",
+                "max_length": 64,
+                "required": true,
+                "options": []
+              },
+              {
+                "variable": "sys_current_task",
+                "label": "当前任务",
+                "type": "text-input",
+                "max_length": 256,
+                "required": false,
+                "options": []
+              }
+            ]
+          }
+        },
+        {
+          "id": "http_2",
+          "type": "http-request",
+          "data": {
+            "title": "加载用户画像",
+            "type": "http-request",
+            "method": "get",
+            "url": "http://localhost:8000/users/{{sys_user_id}}",
+            "authorization": {
+              "type": "no-auth"
+            },
+            "headers": "{\"Content-Type\": \"application/json\"}",
+            "body": null,
+            "body_type": "none",
+            "outputs": [
+              {
+                "type": "json",
+                "children": []
+              }
+            ],
+            "memory": null,
+            "timeout": 5000,
+            "retry": {
+              "max_retries": 1,
+              "retry_interval": 1000
+            }
+          }
+        },
+        {
+          "id": "http_3",
+          "type": "http-request",
+          "data": {
+            "title": "加载当前状态",
+            "type": "http-request",
+            "method": "get",
+            "url": "http://localhost:8000/status/{{sys_user_id}}/latest",
+            "authorization": {
+              "type": "no-auth"
+            },
+            "headers": "{\"Content-Type\": \"application/json\"}",
+            "body": null,
+            "body_type": "none",
+            "outputs": [
+              {
+                "type": "json",
+                "children": []
+              }
+            ],
+            "memory": null,
+            "timeout": 5000,
+            "retry": {
+              "max_retries": 1,
+              "retry_interval": 1000
+            }
+          }
+        },
+        {
+          "id": "llm_4",
+          "type": "llm",
+          "data": {
+            "title": "意图识别 Agent",
+            "type": "llm",
+            "memory": {
+              "role_prefix": {
+                "assistant": "",
+                "user": ""
+              }
+            },
+            "context": {
+              "enabled": false,
+              "variable_selector": null
+            },
+            "model": {
+              "completion_params": {
+                "max_tokens": 64,
+                "temperature": 0.1,
+                "stop": []
+              },
+              "mode": "chat",
+              "name": "deepseek-chat",
+              "provider": "openai_api_compatible"
+            },
+            "prompt_template": [
+              {
+                "role": "system",
+                "text": "你是 MindBloom 的意图识别专家。根据用户输入、用户画像和当前状态判断意图。\n\n## 输出规则\n输出以下四种 intent 之一，只输出标签本身：\n- explore：探索兴趣、寻找方向、推荐活动\n- initiate：启动任务、克服拖延、拆解步骤\n- focus：专注支持、管理注意力\n- crisis：高风险状态，安全降级\n\n优先判断 crisis。不确定时默认 explore。"
+              },
+              {
+                "role": "user",
+                "text": "{{sys_user_id}}"
+              }
+            ],
+            "outputs": [
+              {
+                "type": "text",
+                "children": []
+              }
+            ],
+            "variables": []
+          }
+        },
+        {
+          "id": "if_5",
+          "type": "if-else",
+          "data": {
+            "title": "路由分发",
+            "type": "if-else",
+            "cases": [
+              {
+                "case_id": "explore",
+                "logical_operator": "and",
+                "conditions": [
+                  {
+                    "comparison_operator": "contains",
+                    "id": "c1",
+                    "words": [
+                      "explore"
+                    ],
+                    "value_selector": [
+                      "llm_4",
+                      "text"
+                    ],
+                    "variable_selector": null
+                  }
+                ]
+              },
+              {
+                "case_id": "initiate",
+                "logical_operator": "and",
+                "conditions": [
+                  {
+                    "comparison_operator": "contains",
+                    "id": "c2",
+                    "words": [
+                      "initiate"
+                    ],
+                    "value_selector": [
+                      "llm_4",
+                      "text"
+                    ],
+                    "variable_selector": null
+                  }
+                ]
+              },
+              {
+                "case_id": "focus",
+                "logical_operator": "and",
+                "conditions": [
+                  {
+                    "comparison_operator": "contains",
+                    "id": "c3",
+                    "words": [
+                      "focus"
+                    ],
+                    "value_selector": [
+                      "llm_4",
+                      "text"
+                    ],
+                    "variable_selector": null
+                  }
+                ]
+              },
+              {
+                "case_id": "crisis",
+                "logical_operator": "and",
+                "conditions": [
+                  {
+                    "comparison_operator": "contains",
+                    "id": "c4",
+                    "words": [
+                      "crisis"
+                    ],
+                    "value_selector": [
+                      "llm_4",
+                      "text"
+                    ],
+                    "variable_selector": null
+                  }
+                ]
+              }
+            ],
+            "default_case_id": "default"
+          }
+        },
+        {
+          "id": "llm_explore_6",
+          "type": "llm",
+          "data": {
+            "title": "探索 Agent（内驱力）",
+            "type": "llm",
+            "memory": {
+              "role_prefix": {
+                "assistant": "",
+                "user": ""
+              }
+            },
+            "context": {
+              "enabled": true,
+              "variable_selector": [
+                "conversation_variables",
+                "user_profile"
+              ]
+            },
+            "model": {
+              "completion_params": {
+                "max_tokens": 1024,
+                "temperature": 0.75,
+                "stop": []
+              },
+              "mode": "chat",
+              "name": "deepseek-chat",
+              "provider": "openai_api_compatible"
+            },
+            "prompt_template": [
+              {
+                "role": "system",
+                "text": "你是 MindBloom 的探索伙伴。帮助用户探索内在驱动力。\n\n## 核心原则\n1. 不下定义、不诊断\n2. 从具体经历出发\n3. 优先引导而非告知\n\n## 能量适配\n- 低能量：推荐极低投入活动\n- 中能量：中等投入\n- 高能量：深度投入\n\n## 回复格式\n1. 先回应用户情绪\n2. 问一个问题或提供一个选项\n3. 每次1-2个选项"
+              },
+              {
+                "role": "user",
+                "text": "{{sys_user_id}}"
+              }
+            ],
+            "outputs": [
+              {
+                "type": "text",
+                "children": []
+              }
+            ],
+            "variables": []
+          }
+        },
+        {
+          "id": "http_explore_7",
+          "type": "http-request",
+          "data": {
+            "title": "记录探索 Agent（内驱力）",
+            "type": "http-request",
+            "method": "post",
+            "url": "http://localhost:8000/actions",
+            "authorization": {
+              "type": "no-auth"
+            },
+            "headers": "{\"Content-Type\": \"application/json\"}",
+            "body": {
+              "type": "json",
+              "data": "{\"user_id\": \"{{sys_user_id}}\", \"agent_type\": \"explore\", \"action_type\": \"exploration\", \"content\": \"explore_completed\", \"status\": \"active\"}"
+            },
+            "outputs": [
+              {
+                "type": "json",
+                "children": []
+              }
+            ],
+            "memory": null,
+            "timeout": 5000,
+            "retry": {
+              "max_retries": 0,
+              "retry_interval": 0
+            }
+          }
+        },
+        {
+          "id": "ans_explore_8",
+          "type": "answer",
+          "data": {
+            "title": "探索 Agent（内驱力）回复",
+            "type": "answer",
+            "answer": "{{llm_explore_6.text}}"
+          }
+        },
+        {
+          "id": "llm_initiate_9",
+          "type": "llm",
+          "data": {
+            "title": "启动 Agent（行动力）",
+            "type": "llm",
+            "memory": {
+              "role_prefix": {
+                "assistant": "",
+                "user": ""
+              }
+            },
+            "context": {
+              "enabled": true,
+              "variable_selector": [
+                "conversation_variables",
+                "user_profile"
+              ]
+            },
+            "model": {
+              "completion_params": {
+                "max_tokens": 1024,
+                "temperature": 0.75,
+                "stop": []
+              },
+              "mode": "chat",
+              "name": "deepseek-chat",
+              "provider": "openai_api_compatible"
+            },
+            "prompt_template": [
+              {
+                "role": "system",
+                "text": "你是 MindBloom 的启动伙伴。帮助用户克服启动困难。\n\n## 核心原则\n1. 不责备、不评判\n2. 先接纳，再引导\n3. 最小可执行\n\n## 策略（按优先级）\n1. 2分钟规则\n2. 5秒法则\n3. 身体先行法\n4. 锚定任务\n5. 计时压力\n\n## 回复格式\n1. 确认状态\n2. 推荐1个策略 + 具体动作\n3. 问：你想试试吗？"
+              },
+              {
+                "role": "user",
+                "text": "{{sys_user_id}}"
+              }
+            ],
+            "outputs": [
+              {
+                "type": "text",
+                "children": []
+              }
+            ],
+            "variables": []
+          }
+        },
+        {
+          "id": "http_initiate_10",
+          "type": "http-request",
+          "data": {
+            "title": "记录启动 Agent（行动力）",
+            "type": "http-request",
+            "method": "post",
+            "url": "http://localhost:8000/actions",
+            "authorization": {
+              "type": "no-auth"
+            },
+            "headers": "{\"Content-Type\": \"application/json\"}",
+            "body": {
+              "type": "json",
+              "data": "{\"user_id\": \"{{sys_user_id}}\", \"agent_type\": \"initiate\", \"action_type\": \"task_breakdown\", \"content\": \"initiate_completed\", \"status\": \"active\"}"
+            },
+            "outputs": [
+              {
+                "type": "json",
+                "children": []
+              }
+            ],
+            "memory": null,
+            "timeout": 5000,
+            "retry": {
+              "max_retries": 0,
+              "retry_interval": 0
+            }
+          }
+        },
+        {
+          "id": "ans_initiate_11",
+          "type": "answer",
+          "data": {
+            "title": "启动 Agent（行动力）回复",
+            "type": "answer",
+            "answer": "{{llm_initiate_9.text}}"
+          }
+        },
+        {
+          "id": "llm_focus_12",
+          "type": "llm",
+          "data": {
+            "title": "专注 Agent（注意力）",
+            "type": "llm",
+            "memory": {
+              "role_prefix": {
+                "assistant": "",
+                "user": ""
+              }
+            },
+            "context": {
+              "enabled": true,
+              "variable_selector": [
+                "conversation_variables",
+                "user_profile"
+              ]
+            },
+            "model": {
+              "completion_params": {
+                "max_tokens": 1024,
+                "temperature": 0.75,
+                "stop": []
+              },
+              "mode": "chat",
+              "name": "deepseek-chat",
+              "provider": "openai_api_compatible"
+            },
+            "prompt_template": [
+              {
+                "role": "system",
+                "text": "你是 MindBloom 的专注伙伴。帮助用户管理注意力。\n\n## 核心原则\n1. 不责备分心\n2. 先短后长\n3. 允许走神\n\n## 时长推荐\n专注值低：5分钟 | 中：10-15分钟 | 高：25分钟\n\n## 回复格式\n1. 确认状态\n2. 推荐时长 + 极小目标\n3. 问：现在开始吗？"
+              },
+              {
+                "role": "user",
+                "text": "{{sys_user_id}}"
+              }
+            ],
+            "outputs": [
+              {
+                "type": "text",
+                "children": []
+              }
+            ],
+            "variables": []
+          }
+        },
+        {
+          "id": "http_focus_13",
+          "type": "http-request",
+          "data": {
+            "title": "记录专注 Agent（注意力）",
+            "type": "http-request",
+            "method": "post",
+            "url": "http://localhost:8000/actions",
+            "authorization": {
+              "type": "no-auth"
+            },
+            "headers": "{\"Content-Type\": \"application/json\"}",
+            "body": {
+              "type": "json",
+              "data": "{\"user_id\": \"{{sys_user_id}}\", \"agent_type\": \"focus\", \"action_type\": \"focus_session\", \"content\": \"focus_completed\", \"status\": \"active\"}"
+            },
+            "outputs": [
+              {
+                "type": "json",
+                "children": []
+              }
+            ],
+            "memory": null,
+            "timeout": 5000,
+            "retry": {
+              "max_retries": 0,
+              "retry_interval": 0
+            }
+          }
+        },
+        {
+          "id": "ans_focus_14",
+          "type": "answer",
+          "data": {
+            "title": "专注 Agent（注意力）回复",
+            "type": "answer",
+            "answer": "{{llm_focus_12.text}}"
+          }
+        },
+        {
+          "id": "code_15",
+          "type": "code",
+          "data": {
+            "title": "安全降级回复",
+            "type": "code",
+            "code": "def main(input: dict) -> dict:\n    return {\n        \"reply\": (\n            \"我感受到了你现在很难受。你不需要一个人面对这些。\\n\\n\"\n            \"以下资源可能对你有帮助：\\n\"\n            \"• 全国24小时心理援助热线：010-82951332\\n\"\n            \"• 希望24热线（北京）：400-161-9995\\n\"\n            \"• 简单心理/安顿等APP可在线预约咨询师\\n\\n\"\n            \"你愿意让我帮你记下来，等你状态好一些再聊别的吗？\"\n        )\n    }",
+            "outputs": [
+              {
+                "type": "text",
+                "children": []
+              }
+            ],
+            "variables": []
+          }
+        },
+        {
+          "id": "http_crisis_16",
+          "type": "http-request",
+          "data": {
+            "title": "记录危机事件",
+            "type": "http-request",
+            "method": "post",
+            "url": "http://localhost:8000/actions",
+            "authorization": {
+              "type": "no-auth"
+            },
+            "headers": "{\"Content-Type\": \"application/json\"}",
+            "body": {
+              "type": "json",
+              "data": "{\"user_id\": \"{{sys_user_id}}\", \"agent_type\": \"crisis\", \"action_type\": \"crisis_detected\", \"content\": \"crisis_detected\", \"status\": \"completed\"}"
+            },
+            "outputs": [
+              {
+                "type": "json",
+                "children": []
+              }
+            ],
+            "memory": null,
+            "timeout": 5000,
+            "retry": {
+              "max_retries": 0,
+              "retry_interval": 0
+            }
+          }
+        },
+        {
+          "id": "ans_crisis_17",
+          "type": "answer",
+          "data": {
+            "title": "安全降级回复",
+            "type": "answer",
+            "answer": "{{code_15.reply}}"
+          }
+        },
+        {
+          "id": "ans_fb_18",
+          "type": "answer",
+          "data": {
+            "title": "默认回复",
+            "type": "answer",
+            "answer": "你好，我是 MindBloom。今天感觉怎么样？想聊些什么？"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "e_start_1_http_2",
+          "source": "start_1",
+          "target": "http_2",
+          "sourceHandle": "start_1-source",
+          "targetHandle": "http_2-target"
+        },
+        {
+          "id": "e_http_2_http_3",
+          "source": "http_2",
+          "target": "http_3",
+          "sourceHandle": "http_2-source",
+          "targetHandle": "http_3-target"
+        },
+        {
+          "id": "e_http_3_llm_4",
+          "source": "http_3",
+          "target": "llm_4",
+          "sourceHandle": "http_3-source",
+          "targetHandle": "llm_4-target"
+        },
+        {
+          "id": "e_llm_4_if_5",
+          "source": "llm_4",
+          "target": "if_5",
+          "sourceHandle": "llm_4-source",
+          "targetHandle": "if_5-target"
+        },
+        {
+          "id": "e_if_5_llm_explore_6",
+          "source": "if_5",
+          "target": "llm_explore_6",
+          "sourceHandle": "if_5-explore",
+          "targetHandle": "llm_explore_6-target"
+        },
+        {
+          "id": "e_llm_explore_6_http_explore_7",
+          "source": "llm_explore_6",
+          "target": "http_explore_7",
+          "sourceHandle": "llm_explore_6-source",
+          "targetHandle": "http_explore_7-target"
+        },
+        {
+          "id": "e_http_explore_7_ans_explore_8",
+          "source": "http_explore_7",
+          "target": "ans_explore_8",
+          "sourceHandle": "http_explore_7-source",
+          "targetHandle": "ans_explore_8-target"
+        },
+        {
+          "id": "e_if_5_llm_initiate_9",
+          "source": "if_5",
+          "target": "llm_initiate_9",
+          "sourceHandle": "if_5-initiate",
+          "targetHandle": "llm_initiate_9-target"
+        },
+        {
+          "id": "e_llm_initiate_9_http_initiate_10",
+          "source": "llm_initiate_9",
+          "target": "http_initiate_10",
+          "sourceHandle": "llm_initiate_9-source",
+          "targetHandle": "http_initiate_10-target"
+        },
+        {
+          "id": "e_http_initiate_10_ans_initiate_11",
+          "source": "http_initiate_10",
+          "target": "ans_initiate_11",
+          "sourceHandle": "http_initiate_10-source",
+          "targetHandle": "ans_initiate_11-target"
+        },
+        {
+          "id": "e_if_5_llm_focus_12",
+          "source": "if_5",
+          "target": "llm_focus_12",
+          "sourceHandle": "if_5-focus",
+          "targetHandle": "llm_focus_12-target"
+        },
+        {
+          "id": "e_llm_focus_12_http_focus_13",
+          "source": "llm_focus_12",
+          "target": "http_focus_13",
+          "sourceHandle": "llm_focus_12-source",
+          "targetHandle": "http_focus_13-target"
+        },
+        {
+          "id": "e_http_focus_13_ans_focus_14",
+          "source": "http_focus_13",
+          "target": "ans_focus_14",
+          "sourceHandle": "http_focus_13-source",
+          "targetHandle": "ans_focus_14-target"
+        },
+        {
+          "id": "e_if_5_code_15",
+          "source": "if_5",
+          "target": "code_15",
+          "sourceHandle": "if_5-crisis",
+          "targetHandle": "code_15-target"
+        },
+        {
+          "id": "e_code_15_http_crisis_16",
+          "source": "code_15",
+          "target": "http_crisis_16",
+          "sourceHandle": "code_15-source",
+          "targetHandle": "http_crisis_16-target"
+        },
+        {
+          "id": "e_http_crisis_16_ans_crisis_17",
+          "source": "http_crisis_16",
+          "target": "ans_crisis_17",
+          "sourceHandle": "http_crisis_16-source",
+          "targetHandle": "ans_crisis_17-target"
+        },
+        {
+          "id": "e_if_5_ans_fb_18",
+          "source": "if_5",
+          "target": "ans_fb_18",
+          "sourceHandle": "if_5-default",
+          "targetHandle": "ans_fb_18-target"
+        }
+      ]
+    }
+  }
+}

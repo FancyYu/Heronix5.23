@@ -1,0 +1,96 @@
+{
+  "name": "mindbloom-client",
+  "version": "1.0.0",
+  "description": "MindBloom 本地 MCP 客户端",
+  "mcpEndpoint": "wss://api.xiaozhi.me/mcp/?token=your-token-here",
+  "mcpServers": {
+    "mindbloom-cloud": {
+      "command": "python3",
+      "args": [
+        "/Users/fancy/Desktop/Heronix5.23/MindBloom个人助手/bridge/local_cloud_mcp.py"
+      ]
+    },
+    "mindbloom-alarm": {
+      "command": "python3",
+      "args": [
+        "/Users/fancy/Desktop/Heronix5.23/MindBloom个人助手/bridge/local_stdio_mcp.py"
+      ]
+    }
+  },
+  "mcpServerConfig": {
+    "mindbloom-alarm": {
+      "tools": {
+        "create_alarm": {
+          "description": "创建本地闹钟，到时间会触发提醒音",
+          "enable": true,
+          "usageCount": 4,
+          "lastUsedTime": "2026-05-24 04:41:12"
+        },
+        "list_alarms": {
+          "description": "列出所有本地闹钟",
+          "enable": true
+        },
+        "delete_alarm": {
+          "description": "删除指定的闹钟",
+          "enable": true,
+          "usageCount": 1,
+          "lastUsedTime": "2026-05-24 04:02:45"
+        },
+        "toggle_alarm": {
+          "enable": false,
+          "description": "启用或禁用闹钟"
+        },
+        "speak": {
+          "enable": false,
+          "description": "让小智立即说一句话"
+        }
+      }
+    },
+    "mindbloom-cloud": {
+      "tools": {
+        "get_user_status": {
+          "description": "获取用户当前状态（能量/情绪/专注值）",
+          "enable": true,
+          "usageCount": 1,
+          "lastUsedTime": "2026-05-24 02:40:13"
+        },
+        "get_user_profile": {
+          "description": "获取用户档案信息",
+          "enable": true,
+          "usageCount": 1,
+          "lastUsedTime": "2026-05-24 02:39:53"
+        },
+        "get_recent_actions": {
+          "description": "获取用户的近期行为记录",
+          "enable": true
+        },
+        "get_interests": {
+          "description": "获取用户的兴趣/驱动模式",
+          "enable": true,
+          "usageCount": 2,
+          "lastUsedTime": "2026-05-24 10:56:56"
+        },
+        "get_focus_history": {
+          "description": "获取用户的专注历史记录",
+          "enable": true
+        },
+        "get_context": {
+          "description": "获取用户完整上下文（状态+档案+近期行为+待提醒事项），注意：如果有 pending_reminders 字段，请主动告知用户这些待办提醒",
+          "enable": true,
+          "usageCount": 6,
+          "lastUsedTime": "2026-05-24 10:55:15"
+        },
+        "create_reminder": {
+          "description": "创建一条定时提醒",
+          "enable": true,
+          "usageCount": 5,
+          "lastUsedTime": "2026-05-24 10:54:17"
+        },
+        "get_pending_speech": {
+          "description": "获取待播报的提醒或消息，适合在用户开始对话时调用",
+          "enable": true
+        }
+      }
+    }
+  }
+}

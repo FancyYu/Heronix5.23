@@ -1,0 +1,31 @@
+<!-- pages/simplify/simplify.wxml -->
+<view class="page">
+  <view class="card">
+    <view class="card-title">✨ 文字简化工具</view>
+    <view class="card-desc">粘贴一段复杂的文字，我会用更简单、清晰的方式重新表达。适合信息过载时使用。</view>
+
+    <view class="section-label">原文</view>
+    <textarea
+      class="text-area"
+      placeholder="在这里粘贴需要简化的文字..."
+      placeholder-style="color:#9B9590"
+      value="{{inputText}}"
+      bindinput="onInput"
+      auto-height
+      maxlength="2000"
+    />
+
+    <view class="action-row">
+      <view class="btn-lavender" bindtap="simplify">简化文字</view>
+      <view class="btn-outline lavender-outline" bindtap="clearAll">清空</view>
+    </view>
+
+    <view wx:if="{{outputText}}">
+      <view class="section-label result-label">简化结果</view>
+      <view class="result-box">
+        <text selectable>{{outputText}}</text>
+      </view>
+      <view class="copy-btn" bindtap="copyResult">📋 复制结果</view>
+    </view>
+  </view>
+</view>

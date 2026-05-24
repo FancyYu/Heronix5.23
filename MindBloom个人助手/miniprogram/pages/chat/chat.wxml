@@ -1,0 +1,61 @@
+<!-- pages/chat/chat.wxml -->
+<view class="page">
+  <!-- 顶部欢迎栏 -->
+  <view class="welcome-bar">
+    <view class="welcome-inner">
+      <view class="welcome-title">你好，这里是你的安全空间 🌱</view>
+      <view class="welcome-sub">没有评判，没有压力，按你自己的节奏来</view>
+    </view>
+    <view class="api-badge {{isOnline ? 'online' : 'offline'}}">
+      {{isOnline ? 'AI在线' : '离线模式'}}
+    </view>
+  </view>
+
+  <!-- 快捷话题 -->
+  <scroll-view class="quick-scroll" scroll-x="true">
+    <view class="quick-list">
+      <view class="quick-chip" wx:for="{{quickTopics}}" wx:key="index" bindtap="sendQuick" data-text="{{item.text}}">
+        {{item.label}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 聊天区 -->
+  <scroll-view class="chat-area" scroll-y="true" scroll-into-view="{{scrollTo}}" id="chatScroll">
+    <view wx:for="{{messages}}" wx:key="id" id="msg{{item.id}}">
+      <view class="msg-row {{item.role}}">
+        <view wx:if="{{item.role === 'ai'}}" class="avatar">🌿</view>
+        <view class="bubble {{item.role}}">
+          <text>{{item.content}}</text>
+        </view>
+      </view>
+    </view>
+    <!-- 输入中动画 -->
+    <view class="msg-row ai" wx:if="{{loading}}">
+      <view class="avatar">🌿</view>
+      <view class="bubble ai typing">
+        <view class="dot"></view>
+        <view class="dot"></view>
+        <view class="dot"></view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 输入区 -->
+  <view class="input-bar">
+    <textarea
+      class="msg-input"
+      placeholder="想说什么都可以..."
+      placeholder-style="color:#9B9590"
+      value="{{inputText}}"
+      bindinput="onInput"
+      bindconfirm="sendMessage"
+      auto-height
+      maxlength="500"
+      adjust-position="true"
+    />
+    <view class="send-btn {{inputText ? 'active' : ''}}" bindtap="sendMessage">
+      <text>➤</text>
+    </view>
+  </view>
+</view>

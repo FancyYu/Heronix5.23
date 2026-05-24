@@ -1,0 +1,50 @@
+<!-- pages/tasks/tasks.wxml -->
+<view class="page">
+  <view class="card">
+    <view class="card-title">📋 任务分解器</view>
+    <view class="card-desc">把一个大任务告诉我，我会帮你拆成小步骤。每一步都足够小，让你不会感到压力。</view>
+    <view class="input-row">
+      <input
+        class="task-input"
+        placeholder="例如：准备演讲、整理房间、写报告..."
+        placeholder-style="color:#9B9590"
+        value="{{taskText}}"
+        bindinput="onTaskInput"
+        bindconfirm="breakdown"
+      />
+      <view class="breakdown-btn" bindtap="breakdown">分解</view>
+    </view>
+  </view>
+
+  <!-- 步骤列表 -->
+  <view class="card steps-card" wx:if="{{steps.length > 0}}">
+    <view class="steps-header">
+      <text class="card-title" style="margin-bottom:0">步骤清单</text>
+      <text class="progress-text">{{doneCount}}/{{steps.length}} 完成</text>
+    </view>
+    <view class="progress-bar-wrap">
+      <view class="progress-bar-fill" style="width:{{progressPct}}%"></view>
+    </view>
+    <view class="step-list">
+      <view
+        class="step-item {{item.done ? 'done' : ''}}"
+        wx:for="{{steps}}"
+        wx:key="index"
+        bindtap="toggleStep"
+        data-index="{{index}}"
+      >
+        <view class="step-check">
+          <text wx:if="{{item.done}}">✓</text>
+        </view>
+        <view class="step-body">
+          <view class="step-text">{{item.text}}</view>
+          <view class="step-time">⏱ {{item.time}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-tip" wx:if="{{steps.length === 0}}">
+    输入任务后点击"分解"，我来帮你拆步骤 🌿
+  </view>
+</view>

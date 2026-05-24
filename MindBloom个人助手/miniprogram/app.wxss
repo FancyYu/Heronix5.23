@@ -1,0 +1,113 @@
+/* ===== 全局变量 ===== */
+:root {
+  --bg-primary: #F5F3EF;
+  --bg-secondary: #EDEAE4;
+  --bg-card: #FFFFFF;
+  --text-primary: #3D3A36;
+  --text-secondary: #6B6560;
+  --text-muted: #9B9590;
+  --accent-sage: #8BA888;
+  --accent-sage-light: #C5D8C3;
+  --accent-lavender: #A89BC5;
+  --accent-lavender-light: #D4CCE8;
+  --accent-peach: #D4A88C;
+  --accent-peach-light: #EDD5C4;
+  --accent-sky: #8CAFD4;
+  --accent-sky-light: #C4D8ED;
+}
+
+page {
+  background-color: #F5F3EF;
+  font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  color: #3D3A36;
+  line-height: 1.7;
+}
+
+/* ===== 通用卡片 ===== */
+.card {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin: 24rpx 24rpx 0;
+  box-shadow: 0 2rpx 12rpx rgba(61,58,54,0.08);
+}
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #3D3A36;
+  margin-bottom: 24rpx;
+  display: flex;
+  align-items: center;
+}
+.card-badge {
+  display: inline-block;
+  font-size: 20rpx;
+  font-weight: 600;
+  padding: 6rpx 16rpx;
+  border-radius: 40rpx;
+  margin-left: 16rpx;
+}
+
+/* ===== 按钮 ===== */
+.btn-primary {
+  background: #8BA888;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 16rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1;
+}
+.btn-outline {
+  background: transparent;
+  color: #8BA888;
+  border: 1rpx solid #8BA888;
+  border-radius: 16rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1;
+}
+.btn-peach {
+  background: #D4A88C;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 16rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1;
+}
+.btn-lavender {
+  background: #A89BC5;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 16rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1;
+}
+
+/* ===== 输入框 ===== */
+.input-base {
+  background: #EDEAE4;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+  color: #3D3A36;
+  width: 100%;
+}
+
+/* ===== 空态提示 ===== */
+.empty-tip {
+  text-align: center;
+  color: #9B9590;
+  font-size: 26rpx;
+  padding: 60rpx 0;
+}

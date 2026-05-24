@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "mindbloom-alarm": {
+      "command": "python3",
+      "args": [
+        "/Users/fancy/Desktop/Heronix5.23/MindBloom个人助手/bridge/local_stdio_mcp.py"
+      ]
+    }
+  }
+}

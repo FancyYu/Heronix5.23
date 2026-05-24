@@ -1,0 +1,30 @@
+<!-- pages/emotion/emotion.wxml -->
+<view class="page">
+  <view class="card">
+    <view class="card-title">🫶 情绪调节站</view>
+    <view class="card-desc">选择最接近你现在感受的情绪，我会给你一些温和的应对策略。</view>
+    <view class="emotion-grid">
+      <view
+        class="emotion-card {{selectedIndex === index ? 'selected' : ''}}"
+        wx:for="{{emotions}}"
+        wx:key="index"
+        bindtap="selectEmotion"
+        data-index="{{index}}"
+      >
+        <view class="emotion-emoji">{{item.emoji}}</view>
+        <view class="emotion-name">{{item.name}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 策略面板 -->
+  <view class="card strategy-card" wx:if="{{selectedIndex !== -1}}">
+    <view class="strategy-title">{{emotions[selectedIndex].emoji}} 当你感到{{emotions[selectedIndex].name}}时</view>
+    <view class="strategy-list">
+      <view class="strategy-item" wx:for="{{emotions[selectedIndex].strategies}}" wx:key="index">
+        <view class="strategy-num">{{index + 1}}</view>
+        <view class="strategy-text">{{item}}</view>
+      </view>
+    </view>
+  </view>
+</view>

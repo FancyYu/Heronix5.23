@@ -1,0 +1,18 @@
+# Colima 配置（镜像加速版）
+vm-type: vz
+cpu: 4
+memory: 8
+disk: 60
+dns:
+  - 114.114.114.114
+  - 223.5.5.5
+  - 8.8.8.8
+
+docker:
+  registry-mirrors:
+    # 国内 Docker Hub 镜像加速
+    - https://docker.xuanyuan.me
+    - https://docker.1ms.run
+    - https://docker.ketches.cn
+    - https://docker.agsvpt.work
+    - https://docker.uday2020.com

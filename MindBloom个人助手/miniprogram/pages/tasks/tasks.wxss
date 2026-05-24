@@ -1,0 +1,41 @@
+/* pages/tasks/tasks.wxss */
+.page { background: #F5F3EF; min-height: 100vh; padding-bottom: 40rpx; }
+.card { background: #fff; border-radius: 24rpx; padding: 32rpx; margin: 24rpx 24rpx 0; box-shadow: 0 2rpx 16rpx rgba(61,58,54,0.07); }
+.card-title { font-size: 32rpx; font-weight: 700; color: #3D3A36; margin-bottom: 16rpx; }
+.card-desc { font-size: 24rpx; color: #6B6560; line-height: 1.6; margin-bottom: 24rpx; }
+
+.input-row { display: flex; gap: 16rpx; align-items: center; }
+.task-input {
+  flex: 1; background: #EDEAE4; border-radius: 16rpx;
+  padding: 20rpx 24rpx; font-size: 28rpx; color: #3D3A36;
+}
+.breakdown-btn {
+  background: #D4A88C; color: #fff;
+  border-radius: 16rpx; padding: 20rpx 32rpx;
+  font-size: 28rpx; font-weight: 600; white-space: nowrap;
+}
+
+.steps-card { margin-top: 16rpx; }
+.steps-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16rpx; }
+.progress-text { font-size: 24rpx; color: #8BA888; font-weight: 600; }
+.progress-bar-wrap { height: 8rpx; background: #EDEAE4; border-radius: 8rpx; margin-bottom: 24rpx; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: #8BA888; border-radius: 8rpx; transition: width 0.4s; }
+
+.step-list { display: flex; flex-direction: column; gap: 12rpx; }
+.step-item {
+  display: flex; align-items: flex-start; gap: 20rpx;
+  padding: 20rpx 24rpx; background: #F5F3EF; border-radius: 16rpx;
+}
+.step-item.done .step-text { text-decoration: line-through; color: #9B9590; }
+.step-item.done .step-check { background: #8BA888; border-color: #8BA888; color: #fff; }
+
+.step-check {
+  width: 40rpx; height: 40rpx; flex-shrink: 0;
+  border: 2rpx solid #D4D0CB; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24rpx; margin-top: 4rpx;
+}
+.step-body { flex: 1; }
+.step-text { font-size: 28rpx; color: #3D3A36; line-height: 1.6; }
+.step-time { font-size: 22rpx; color: #9B9590; margin-top: 6rpx; }
+.empty-tip { text-align: center; color: #9B9590; font-size: 28rpx; padding: 80rpx 40rpx; }

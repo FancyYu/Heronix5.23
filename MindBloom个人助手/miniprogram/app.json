@@ -1,0 +1,55 @@
+{
+  "pages": [
+    "pages/chat/chat",
+    "pages/tasks/tasks",
+    "pages/focus/focus",
+    "pages/simplify/simplify",
+    "pages/emotion/emotion"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F5F3EF",
+    "navigationBarTitleText": "MindBloom",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F5F3EF"
+  },
+  "tabBar": {
+    "color": "#9B9590",
+    "selectedColor": "#8BA888",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/chat/chat",
+        "text": "AI对话",
+        "iconPath": "",
+        "selectedIconPath": ""
+      },
+      {
+        "pagePath": "pages/tasks/tasks",
+        "text": "任务分解",
+        "iconPath": "",
+        "selectedIconPath": ""
+      },
+      {
+        "pagePath": "pages/focus/focus",
+        "text": "专注计时",
+        "iconPath": "",
+        "selectedIconPath": ""
+      },
+      {
+        "pagePath": "pages/simplify/simplify",
+        "text": "文字简化",
+        "iconPath": "",
+        "selectedIconPath": ""
+      },
+      {
+        "pagePath": "pages/emotion/emotion",
+        "text": "情绪调节",
+        "iconPath": "",
+        "selectedIconPath": ""
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}

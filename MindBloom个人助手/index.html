@@ -1,0 +1,2167 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>MindBloom · 神经多样性AI助手</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Quicksand:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="config.js"></script>
+    <style>
+      :root {
+        --bg-primary: #f5f3ef;
+        --bg-secondary: #edeae4;
+        --bg-card: #ffffff;
+        --text-primary: #3d3a36;
+        --text-secondary: #6b6560;
+        --text-muted: #9b9590;
+        --accent-sage: #8ba888;
+        --accent-sage-light: #c5d8c3;
+        --accent-lavender: #a89bc5;
+        --accent-lavender-light: #d4cce8;
+        --accent-peach: #d4a88c;
+        --accent-peach-light: #edd5c4;
+        --accent-sky: #8cafd4;
+        --accent-sky-light: #c4d8ed;
+        --border: rgba(61, 58, 54, 0.08);
+        --shadow-sm: 0 1px 3px rgba(61, 58, 54, 0.06);
+        --shadow-md: 0 4px 12px rgba(61, 58, 54, 0.08);
+        --shadow-lg: 0 8px 24px rgba(61, 58, 54, 0.1);
+        --radius-sm: 10px;
+        --radius-md: 16px;
+        --radius-lg: 24px;
+        --font-cn: "Noto Sans SC", sans-serif;
+        --font-en: "Quicksand", sans-serif;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      [data-theme="dark"] {
+        --bg-primary: #1e1d1b;
+        --bg-secondary: #2a2826;
+        --bg-card: #333130;
+        --text-primary: #e8e4df;
+        --text-secondary: #b0aaa4;
+        --text-muted: #7a7570;
+        --accent-sage: #8ba888;
+        --accent-sage-light: #3d4a3c;
+        --accent-lavender: #a89bc5;
+        --accent-lavender-light: #3d3848;
+        --accent-peach: #d4a88c;
+        --accent-peach-light: #4a3d34;
+        --accent-sky: #8cafd4;
+        --accent-sky-light: #34404a;
+        --border: rgba(232, 228, 223, 0.08);
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: var(--font-cn);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.7;
+        transition: var(--transition);
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--text-muted);
+        border-radius: 3px;
+        opacity: 0.3;
+      }
+
+      /* Header */
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--bg-primary);
+        border-bottom: 1px solid var(--border);
+        padding: 16px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        backdrop-filter: blur(12px);
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: var(--font-en);
+        font-weight: 700;
+        font-size: 22px;
+        color: var(--accent-sage);
+        letter-spacing: -0.5px;
+      }
+      .logo-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(
+          135deg,
+          var(--accent-sage),
+          var(--accent-lavender)
+        );
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .theme-toggle {
+        width: 44px;
+        height: 44px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg-card);
+        color: var(--text-secondary);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: var(--transition);
+      }
+      .theme-toggle:hover {
+        border-color: var(--accent-sage);
+        color: var(--accent-sage);
+      }
+      .sensory-btn {
+        padding: 8px 16px;
+        border: 1px solid var(--accent-lavender);
+        border-radius: var(--radius-sm);
+        background: var(--accent-lavender-light);
+        color: var(--accent-lavender);
+        font-family: var(--font-cn);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .sensory-btn:hover {
+        background: var(--accent-lavender);
+        color: #fff;
+      }
+      .api-status {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-family: var(--font-en);
+      }
+      .api-status.online {
+        background: var(--accent-sage-light);
+        color: var(--accent-sage);
+      }
+      .api-status.offline {
+        background: var(--accent-peach-light);
+        color: var(--accent-peach);
+      }
+
+      /* Main Layout */
+      .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 32px;
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 32px;
+        min-height: calc(100vh - 80px);
+      }
+
+      /* Sidebar */
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        position: sticky;
+        top: 100px;
+        align-self: start;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: var(--transition);
+        border: 1px solid transparent;
+      }
+      .nav-item:hover {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+      }
+      .nav-item.active {
+        background: var(--accent-sage-light);
+        color: var(--accent-sage);
+        border-color: var(--accent-sage);
+        font-weight: 600;
+      }
+      .nav-icon {
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+      }
+
+      /* Content */
+      .content {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+      .section {
+        display: none;
+        animation: fadeSlideIn 0.4s ease;
+      }
+      .section.active {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+      @keyframes fadeSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Cards */
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 28px;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+      }
+      .card:hover {
+        box-shadow: var(--shadow-md);
+      }
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+      .card-title {
+        font-size: 17px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .card-badge {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-family: var(--font-en);
+      }
+
+      /* Chat */
+      .chat-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        max-height: 520px;
+        overflow-y: auto;
+        padding: 4px;
+      }
+      .message {
+        max-width: 80%;
+        padding: 14px 20px;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        line-height: 1.7;
+        animation: msgIn 0.3s ease;
+        word-break: break-word;
+      }
+      @keyframes msgIn {
+        from {
+          opacity: 0;
+          transform: scale(0.96);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .message.ai {
+        align-self: flex-start;
+        background: var(--accent-sage-light);
+        color: var(--text-primary);
+        border-bottom-left-radius: 4px;
+      }
+      .message.user {
+        align-self: flex-end;
+        background: var(--accent-lavender);
+        color: #fff;
+        border-bottom-right-radius: 4px;
+      }
+      .chat-input-area {
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+      }
+      .chat-input {
+        flex: 1;
+        padding: 14px 18px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-family: var(--font-cn);
+        font-size: 14px;
+        resize: none;
+        outline: none;
+        min-height: 52px;
+        max-height: 120px;
+        transition: var(--transition);
+      }
+      .chat-input:focus {
+        border-color: var(--accent-sage);
+        box-shadow: 0 0 0 3px var(--accent-sage-light);
+      }
+      .chat-input::placeholder {
+        color: var(--text-muted);
+      }
+      .send-btn {
+        width: 52px;
+        height: 52px;
+        flex-shrink: 0;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--accent-sage);
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .send-btn:hover {
+        background: #7a9a77;
+        transform: scale(1.05);
+      }
+      .send-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .quick-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .quick-action {
+        padding: 7px 14px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background: var(--bg-card);
+        color: var(--text-secondary);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        white-space: nowrap;
+      }
+      .quick-action:hover {
+        border-color: var(--accent-sage);
+        color: var(--accent-sage);
+        background: var(--accent-sage-light);
+      }
+      .typing-indicator {
+        display: flex;
+        gap: 4px;
+        padding: 14px 20px;
+        align-self: flex-start;
+      }
+      .typing-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--text-muted);
+        animation: typingBounce 1.2s ease-in-out infinite;
+      }
+      .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes typingBounce {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.4;
+        }
+        30% {
+          transform: translateY(-6px);
+          opacity: 1;
+        }
+      }
+
+      /* Task Breakdown */
+      .task-input-group {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .task-input {
+        flex: 1;
+        padding: 14px 18px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-family: var(--font-cn);
+        font-size: 14px;
+        outline: none;
+        transition: var(--transition);
+      }
+      .task-input:focus {
+        border-color: var(--accent-peach);
+        box-shadow: 0 0 0 3px var(--accent-peach-light);
+      }
+      .breakdown-btn {
+        padding: 0 24px;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--accent-peach);
+        color: #fff;
+        font-family: var(--font-cn);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        white-space: nowrap;
+      }
+      .breakdown-btn:hover {
+        background: #c49a7e;
+      }
+      .step-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .step-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 14px 18px;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-sm);
+        transition: var(--transition);
+        cursor: pointer;
+      }
+      .step-item:hover {
+        background: var(--accent-peach-light);
+      }
+      .step-item.completed .step-check {
+        background: var(--accent-sage);
+        border-color: var(--accent-sage);
+        color: #fff;
+      }
+      .step-item.completed .step-text {
+        text-decoration: line-through;
+        color: var(--text-muted);
+      }
+      .step-check {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        border: 2px solid var(--border);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        transition: var(--transition);
+        margin-top: 1px;
+      }
+      .step-text {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .step-time {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 4px;
+        font-family: var(--font-en);
+      }
+
+      /* Focus Timer */
+      .timer-display {
+        text-align: center;
+        padding: 40px 0;
+      }
+      .timer-circle {
+        width: 220px;
+        height: 220px;
+        margin: 0 auto 24px;
+        border-radius: 50%;
+        border: 4px solid var(--accent-sky-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        transition: var(--transition);
+      }
+      .timer-circle.running {
+        border-color: var(--accent-sky);
+      }
+      .timer-circle.paused {
+        border-color: var(--accent-peach);
+      }
+      .timer-svg {
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        width: 228px;
+        height: 228px;
+        transform: rotate(-90deg);
+      }
+      .timer-svg circle {
+        fill: none;
+        stroke-width: 4;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 1s linear;
+      }
+      .timer-time {
+        font-family: var(--font-en);
+        font-size: 48px;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -1px;
+      }
+      .timer-label {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+      .timer-controls {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 8px;
+      }
+      .timer-btn {
+        padding: 10px 28px;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-family: var(--font-cn);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .timer-btn.primary {
+        background: var(--accent-sky);
+        color: #fff;
+      }
+      .timer-btn.primary:hover {
+        background: #7a9fc4;
+      }
+      .timer-btn.secondary {
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        border: 1px solid var(--border);
+      }
+      .timer-btn.secondary:hover {
+        border-color: var(--accent-sky);
+        color: var(--accent-sky);
+      }
+      .timer-presets {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
+      }
+      .preset-btn {
+        padding: 6px 16px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background: var(--bg-card);
+        color: var(--text-secondary);
+        font-size: 12px;
+        font-family: var(--font-en);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .preset-btn:hover,
+      .preset-btn.active {
+        border-color: var(--accent-sky);
+        color: var(--accent-sky);
+        background: var(--accent-sky-light);
+      }
+
+      /* Text Simplifier */
+      .simplify-area {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .simplify-box {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .simplify-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .simplify-textarea {
+        flex: 1;
+        min-height: 180px;
+        padding: 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-family: var(--font-cn);
+        font-size: 14px;
+        line-height: 1.8;
+        resize: vertical;
+        outline: none;
+        transition: var(--transition);
+      }
+      .simplify-textarea:focus {
+        border-color: var(--accent-lavender);
+        box-shadow: 0 0 0 3px var(--accent-lavender-light);
+      }
+      .simplify-output {
+        background: var(--accent-lavender-light);
+        border-color: var(--accent-lavender);
+      }
+      .simplify-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .simplify-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: var(--radius-sm);
+        background: var(--accent-lavender);
+        color: #fff;
+        font-family: var(--font-cn);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .simplify-btn:hover {
+        background: #988bb5;
+      }
+      .simplify-btn.outline {
+        background: transparent;
+        border: 1px solid var(--accent-lavender);
+        color: var(--accent-lavender);
+      }
+      .simplify-btn.outline:hover {
+        background: var(--accent-lavender-light);
+      }
+
+      /* Emotion Regulator */
+      .emotion-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+      .emotion-card {
+        padding: 20px 16px;
+        text-align: center;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--bg-card);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .emotion-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+      .emotion-card.selected {
+        border-color: var(--accent-sage);
+        background: var(--accent-sage-light);
+      }
+      .emotion-emoji {
+        font-size: 32px;
+        margin-bottom: 8px;
+      }
+      .emotion-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .strategy-panel {
+        padding: 24px;
+        background: var(--accent-sage-light);
+        border-radius: var(--radius-md);
+        display: none;
+      }
+      .strategy-panel.visible {
+        display: block;
+        animation: fadeSlideIn 0.4s ease;
+      }
+      .strategy-title {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .strategy-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .strategy-item {
+        padding: 12px 16px;
+        background: var(--bg-card);
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        line-height: 1.6;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .strategy-num {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+        background: var(--accent-sage);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        font-family: var(--font-en);
+      }
+
+      /* Sensory Overlay */
+      .sensory-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: #0a0a0a;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 24px;
+      }
+      .sensory-overlay.active {
+        display: flex;
+        animation: fadeIn 0.5s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .breathing-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          var(--accent-sage) 0%,
+          transparent 70%
+        );
+        animation: breathe 4s ease-in-out infinite;
+      }
+      @keyframes breathe {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.6;
+        }
+        50% {
+          transform: scale(1.5);
+          opacity: 1;
+        }
+      }
+      .sensory-text {
+        color: #aaa;
+        font-size: 14px;
+        font-weight: 300;
+        letter-spacing: 2px;
+      }
+      .sensory-close {
+        margin-top: 20px;
+        padding: 10px 24px;
+        border: 1px solid #333;
+        border-radius: var(--radius-sm);
+        background: transparent;
+        color: #888;
+        font-size: 13px;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .sensory-close:hover {
+        border-color: #666;
+        color: #ccc;
+      }
+
+      /* Reminders */
+      .reminder-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .reminder-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .reminder-row label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        min-width: 60px;
+      }
+      .reminder-input {
+        flex: 1;
+        min-width: 200px;
+        padding: 12px 16px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-family: var(--font-cn);
+        font-size: 14px;
+        outline: none;
+        transition: var(--transition);
+      }
+      .reminder-input:focus {
+        border-color: var(--accent-sky);
+        box-shadow: 0 0 0 3px var(--accent-sky-light);
+      }
+      .reminder-datetime {
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-family: var(--font-cn);
+        font-size: 13px;
+        outline: none;
+        transition: var(--transition);
+      }
+      .reminder-datetime:focus {
+        border-color: var(--accent-sky);
+        box-shadow: 0 0 0 3px var(--accent-sky-light);
+      }
+      .reminder-type-select {
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-family: var(--font-cn);
+        font-size: 13px;
+        outline: none;
+        cursor: pointer;
+      }
+      .reminder-btn {
+        padding: 10px 28px;
+        border: none;
+        border-radius: var(--radius-sm);
+        background: var(--accent-sky);
+        color: #fff;
+        font-family: var(--font-cn);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        white-space: nowrap;
+      }
+      .reminder-btn:hover {
+        background: #7a9fc4;
+      }
+      .reminder-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .reminder-btn.danger {
+        background: transparent;
+        color: var(--accent-peach);
+        border: 1px solid var(--accent-peach-light);
+        padding: 6px 14px;
+        font-size: 12px;
+      }
+      .reminder-btn.danger:hover {
+        background: var(--accent-peach-light);
+      }
+      .reminder-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .reminder-empty {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-muted);
+        font-size: 14px;
+      }
+      .reminder-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 18px;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-sm);
+        border-left: 4px solid var(--accent-sky);
+        transition: var(--transition);
+      }
+      .reminder-card.fired {
+        border-left-color: var(--text-muted);
+        opacity: 0.5;
+      }
+      .reminder-card-left {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .reminder-card-text {
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .reminder-card-meta {
+        font-size: 12px;
+        color: var(--text-muted);
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      .reminder-card-type {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: var(--accent-sky-light);
+        color: var(--accent-sky);
+      }
+      .reminder-card-status {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: var(--accent-sage-light);
+        color: var(--accent-sage);
+      }
+      .reminder-card-status.fired {
+        background: var(--bg-secondary);
+        color: var(--text-muted);
+      }
+      .reminder-refresh {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+      .reminder-refresh:hover {
+        color: var(--accent-sky);
+      }
+
+      /* Welcome Banner */
+      .welcome-banner {
+        background: linear-gradient(
+          135deg,
+          var(--accent-sage-light) 0%,
+          var(--accent-lavender-light) 50%,
+          var(--accent-peach-light) 100%
+        );
+        border-radius: var(--radius-lg);
+        padding: 36px 40px;
+        position: relative;
+        overflow: hidden;
+      }
+      .welcome-banner::after {
+        content: "";
+        position: absolute;
+        right: -40px;
+        top: -40px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(
+          circle,
+          var(--accent-sage) 0%,
+          transparent 70%
+        );
+        opacity: 0.15;
+        border-radius: 50%;
+      }
+      .welcome-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .welcome-sub {
+        font-size: 14px;
+        color: var(--text-secondary);
+        max-width: 500px;
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .main-container {
+          grid-template-columns: 1fr;
+          padding: 20px;
+        }
+        .sidebar {
+          position: static;
+          flex-direction: row;
+          overflow-x: auto;
+          padding-bottom: 8px;
+        }
+        .nav-item {
+          white-space: nowrap;
+          padding: 10px 14px;
+          font-size: 13px;
+        }
+        .simplify-area {
+          grid-template-columns: 1fr;
+        }
+        .header {
+          padding: 12px 20px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sensory Calm Overlay -->
+    <div class="sensory-overlay" id="sensoryOverlay">
+      <div class="breathing-circle"></div>
+      <div class="sensory-text">跟随呼吸节奏 · 慢慢放松</div>
+      <button class="sensory-close" onclick="toggleSensory()">返回</button>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">🌿</div>
+        MindBloom
+      </div>
+      <div class="header-actions">
+        <span class="api-status offline" id="apiStatus">离线模式</span>
+        <button class="sensory-btn" onclick="toggleSensory()">
+          🧘 感官休息
+        </button>
+        <button
+          class="theme-toggle"
+          onclick="toggleTheme()"
+          title="切换主题"
+          aria-label="切换深色模式"
+        >
+          🌙
+        </button>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <div class="main-container">
+      <nav class="sidebar" role="navigation" aria-label="主导航">
+        <div
+          class="nav-item active"
+          data-section="chat"
+          onclick="switchSection('chat')"
+          tabindex="0"
+          role="button"
+        >
+          <span class="nav-icon">💬</span> AI 对话
+        </div>
+        <div
+          class="nav-item"
+          data-section="tasks"
+          onclick="switchSection('tasks')"
+          tabindex="0"
+          role="button"
+        >
+          <span class="nav-icon">📋</span> 任务分解
+        </div>
+        <div
+          class="nav-item"
+          data-section="focus"
+          onclick="switchSection('focus')"
+          tabindex="0"
+          role="button"
+        >
+          <span class="nav-icon">⏱️</span> 专注计时
+        </div>
+        <div
+          class="nav-item"
+          data-section="simplify"
+          onclick="switchSection('simplify')"
+          tabindex="0"
+          role="button"
+        >
+          <span class="nav-icon">✨</span> 文字简化
+        </div>
+        <div
+          class="nav-item"
+          data-section="emotion"
+          onclick="switchSection('emotion')"
+          tabindex="0"
+          role="button"
+        >
+          <span class="nav-icon">🫶</span> 情绪调节
+        </div>
+        <div
+          class="nav-item"
+          data-section="reminders"
+          onclick="switchSection('reminders')"
+          tabindex="0"
+          role="button"
+        >
+          <span class="nav-icon">🔔</span> 定时提醒
+        </div>
+      </nav>
+
+      <main class="content">
+        <div class="welcome-banner" id="welcomeBanner">
+          <div class="welcome-title">你好，这里是你的安全空间 🌱</div>
+          <div class="welcome-sub">
+            MindBloom
+            为神经多样性人士设计。没有评判，没有压力，按你自己的节奏来。
+          </div>
+        </div>
+
+        <!-- Chat Section -->
+        <section class="section active" id="section-chat">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">💬 和 MindBloom 聊聊</div>
+              <span
+                class="card-badge"
+                style="
+                  background: var(--accent-sage-light);
+                  color: var(--accent-sage);
+                "
+                >随时在线</span
+              >
+            </div>
+            <div class="quick-actions">
+              <button
+                class="quick-action"
+                onclick="sendQuick('我今天感觉有点 overwhelmed')"
+              >
+                😵‍💫 感觉超负荷了
+              </button>
+              <button
+                class="quick-action"
+                onclick="sendQuick('帮我制定一个今天的计划')"
+              >
+                📅 制定今日计划
+              </button>
+              <button
+                class="quick-action"
+                onclick="sendQuick('我需要社交场景的应对建议')"
+              >
+                🤝 社交建议
+              </button>
+              <button
+                class="quick-action"
+                onclick="sendQuick('解释一下 executive dysfunction')"
+              >
+                🧠 什么是执行功能障碍
+              </button>
+              <button
+                class="quick-action"
+                onclick="sendQuick('给我一些自我关怀的小建议')"
+              >
+                💛 自我关怀
+              </button>
+            </div>
+            <div class="chat-container" id="chatContainer">
+              <div class="message ai">
+                嗨 👋 我是 MindBloom，你的AI伙伴。<br /><br />你可以跟我聊任何事——无论是需要拆解一个任务、处理情绪，还是只是想有人陪着说说话。这里没有对错，按你的方式来就好。
+              </div>
+            </div>
+            <div class="chat-input-area" style="margin-top: 16px">
+              <textarea
+                class="chat-input"
+                id="chatInput"
+                placeholder="想说什么都可以..."
+                rows="1"
+                onkeydown="handleChatKey(event)"
+              ></textarea>
+              <button
+                class="send-btn"
+                id="sendBtn"
+                onclick="sendMessage()"
+                aria-label="发送消息"
+              >
+                ➤
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tasks Section -->
+        <section class="section" id="section-tasks">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📋 任务分解器</div>
+              <span
+                class="card-badge"
+                style="
+                  background: var(--accent-peach-light);
+                  color: var(--accent-peach);
+                "
+                >Anti-Overwhelm</span
+              >
+            </div>
+            <p
+              style="
+                font-size: 13px;
+                color: var(--text-secondary);
+                margin-bottom: 16px;
+              "
+            >
+              把一个大任务告诉我，我会帮你拆成小步骤。每一步都足够小，让你不会感到压力。
+            </p>
+            <div class="task-input-group">
+              <input
+                class="task-input"
+                id="taskInput"
+                type="text"
+                placeholder="例如：准备下周的演讲、整理房间、写一份报告..."
+              />
+              <button class="breakdown-btn" onclick="breakdownTask()">
+                分解任务
+              </button>
+            </div>
+            <div class="step-list" id="stepList"></div>
+          </div>
+        </section>
+
+        <!-- Focus Timer Section -->
+        <section class="section" id="section-focus">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⏱️ 温和专注计时</div>
+              <span
+                class="card-badge"
+                style="
+                  background: var(--accent-sky-light);
+                  color: var(--accent-sky);
+                "
+                >Pomodoro+</span
+              >
+            </div>
+            <div class="timer-display">
+              <div class="timer-circle" id="timerCircle">
+                <svg class="timer-svg" viewBox="0 0 228 228">
+                  <circle
+                    cx="114"
+                    cy="114"
+                    r="110"
+                    stroke="var(--accent-sky-light)"
+                  />
+                  <circle
+                    cx="114"
+                    cy="114"
+                    r="110"
+                    stroke="var(--accent-sky)"
+                    id="timerProgress"
+                    stroke-dasharray="691.15"
+                    stroke-dashoffset="0"
+                  />
+                </svg>
+                <div>
+                  <div class="timer-time" id="timerDisplay">25:00</div>
+                  <div class="timer-label" id="timerLabel">准备开始</div>
+                </div>
+              </div>
+              <div class="timer-controls">
+                <button
+                  class="timer-btn primary"
+                  id="timerStartBtn"
+                  onclick="toggleTimer()"
+                >
+                  开始专注
+                </button>
+                <button class="timer-btn secondary" onclick="resetTimer()">
+                  重置
+                </button>
+              </div>
+              <div class="timer-presets">
+                <button class="preset-btn active" onclick="setTimer(25)">
+                  25 min
+                </button>
+                <button class="preset-btn" onclick="setTimer(15)">
+                  15 min
+                </button>
+                <button class="preset-btn" onclick="setTimer(10)">
+                  10 min
+                </button>
+                <button class="preset-btn" onclick="setTimer(5)">5 min</button>
+                <button class="preset-btn" onclick="setTimer(45)">
+                  45 min
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Text Simplifier Section -->
+        <section class="section" id="section-simplify">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">✨ 文字简化工具</div>
+              <span
+                class="card-badge"
+                style="
+                  background: var(--accent-lavender-light);
+                  color: var(--accent-lavender);
+                "
+                >Plain Language</span
+              >
+            </div>
+            <p
+              style="
+                font-size: 13px;
+                color: var(--text-secondary);
+                margin-bottom: 16px;
+              "
+            >
+              粘贴一段复杂的文字，我会用更简单、清晰的方式重新表达。适合阅读障碍或信息过载时使用。
+            </p>
+            <div class="simplify-area">
+              <div class="simplify-box">
+                <label class="simplify-label">原文</label>
+                <textarea
+                  class="simplify-textarea"
+                  id="simplifyInput"
+                  placeholder="在这里粘贴需要简化的文字..."
+                ></textarea>
+              </div>
+              <div class="simplify-box">
+                <label class="simplify-label">简化结果</label>
+                <textarea
+                  class="simplify-textarea simplify-output"
+                  id="simplifyOutput"
+                  readonly
+                  placeholder="简化后的文字会显示在这里..."
+                ></textarea>
+              </div>
+            </div>
+            <div class="simplify-actions">
+              <button class="simplify-btn" onclick="simplifyText()">
+                简化文字
+              </button>
+              <button class="simplify-btn outline" onclick="copySimplified()">
+                复制结果
+              </button>
+              <button class="simplify-btn outline" onclick="clearSimplify()">
+                清空
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Emotion Section -->
+        <section class="section" id="section-emotion">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🫶 情绪调节站</div>
+              <span
+                class="card-badge"
+                style="
+                  background: var(--accent-sage-light);
+                  color: var(--accent-sage);
+                "
+                >Safe Space</span
+              >
+            </div>
+            <p
+              style="
+                font-size: 13px;
+                color: var(--text-secondary);
+                margin-bottom: 20px;
+              "
+            >
+              选择最接近你现在感受的情绪，我会给你一些温和的应对策略。没有标准答案，选你觉得对的就好。
+            </p>
+            <div class="emotion-grid" id="emotionGrid"></div>
+            <div class="strategy-panel" id="strategyPanel">
+              <div class="strategy-title" id="strategyTitle"></div>
+              <ul class="strategy-list" id="strategyList"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Reminders Section -->
+        <section class="section" id="section-reminders">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🔔 定时提醒</div>
+              <span
+                class="card-badge"
+                style="
+                  background: var(--accent-sky-light);
+                  color: var(--accent-sky);
+                "
+                >小智联动</span
+              >
+            </div>
+            <p
+              style="
+                font-size: 13px;
+                color: var(--text-secondary);
+                margin-bottom: 16px;
+              "
+            >
+              创建一条定时提醒，到时间会自动推送到小智硬件。适合用来提醒休息、吃药、喝水或开始任务。
+            </p>
+            <div class="reminder-form">
+              <div class="reminder-row">
+                <label>提醒内容</label>
+                <input
+                  class="reminder-input"
+                  id="reminderText"
+                  type="text"
+                  placeholder="例如：该起来活动一下了 🚶"
+                />
+              </div>
+              <div class="reminder-row">
+                <label>提醒时间</label>
+                <input
+                  class="reminder-datetime"
+                  id="reminderTime"
+                  type="datetime-local"
+                />
+                <select class="reminder-type-select" id="reminderType">
+                  <option value="break">休息提醒</option>
+                  <option value="task">任务提醒</option>
+                  <option value="medication">吃药提醒</option>
+                  <option value="water">喝水提醒</option>
+                  <option value="custom">自定义</option>
+                </select>
+                <button
+                  class="reminder-btn"
+                  id="createReminderBtn"
+                  onclick="createReminder()"
+                >
+                  创建提醒
+                </button>
+              </div>
+            </div>
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 12px;
+              "
+            >
+              <div style="font-size: 14px; font-weight: 600">已创建的提醒</div>
+              <div class="reminder-refresh" onclick="loadReminders()">
+                🔄 刷新
+              </div>
+            </div>
+            <div class="reminder-list" id="reminderList">
+              <div class="reminder-empty">还没有提醒，在上方创建一个吧 🌿</div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      // ===== Config & API Status =====
+      const CFG = window.MINDBLOOM_CONFIG || {};
+      const hasAPI = !!(CFG.apiKey && CFG.apiKey.trim());
+      document.getElementById("apiStatus").textContent = hasAPI
+        ? "AI 在线"
+        : "离线模式";
+      document.getElementById("apiStatus").className =
+        "api-status " + (hasAPI ? "online" : "offline");
+
+      // Conversation history for API calls
+      let chatHistory = [];
+
+      // ===== Theme =====
+      function toggleTheme() {
+        const isDark =
+          document.documentElement.getAttribute("data-theme") === "dark";
+        document.documentElement.setAttribute(
+          "data-theme",
+          isDark ? "" : "dark",
+        );
+        document.querySelector(".theme-toggle").textContent = isDark
+          ? "🌙"
+          : "☀️";
+        localStorage.setItem("mindbloom-theme", isDark ? "light" : "dark");
+      }
+      (function initTheme() {
+        const saved = localStorage.getItem("mindbloom-theme");
+        if (
+          saved === "dark" ||
+          (!saved && window.matchMedia("(prefers-color-scheme: dark)").matches)
+        ) {
+          document.documentElement.setAttribute("data-theme", "dark");
+          document.querySelector(".theme-toggle").textContent = "☀️";
+        }
+      })();
+
+      // ===== Navigation =====
+      function switchSection(id) {
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((n) => n.classList.remove("active"));
+        document
+          .querySelector('[data-section="' + id + '"]')
+          .classList.add("active");
+        document
+          .querySelectorAll(".section")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById("section-" + id).classList.add("active");
+        var banner = document.getElementById("welcomeBanner");
+        if (banner && id !== "chat") banner.style.display = "none";
+        if (id === "reminders") loadReminders();
+      }
+
+      // ===== Sensory Calm =====
+      function toggleSensory() {
+        document.getElementById("sensoryOverlay").classList.toggle("active");
+      }
+
+      // ===== Fallback Local Responses =====
+      const localResponses = {
+        overwhelmed:
+          "感觉超负荷是完全正常的 💚\n\n试试这样做：\n1. 先停下来，做3次深呼吸\n2. 把脑子里所有事情写下来（不用排序）\n3. 只选一件最小的事开始\n4. 其他的？它们可以等一等\n\n你已经很努力了，允许自己慢下来。",
+        计划: "好的，让我们一起规划今天 📅\n\n不需要完美，只需要够用：\n• 上午：选1件最重要的事\n• 中间：安排休息时间（很重要！）\n• 下午：处理次要事项\n• 晚上：只做让自己舒服的事\n\n记住：完成比完美更重要。如果计划被打乱了也没关系，灵活调整就好。",
+        社交: '社交确实可能让人紧张，这些策略或许有帮助 🤝\n\n• 提前准备好几个话题或回应模板\n• 给自己设定一个"撤退信号"，感到不适时可以离开\n• 不需要一直说话，倾听也是参与\n• 选择你舒适的社交形式（线上/小组/一对一）\n• 事后给自己恢复时间\n\n你的社交方式没有对错之分。',
+        executive:
+          '执行功能障碍（Executive Dysfunction）是指大脑在计划、启动、组织和完成任务时遇到困难 🧠\n\n这不是懒惰，也不是缺乏意志力。它是很多神经多样性人士的常见体验。\n\n一些应对方法：\n• 把任务拆到极小的步骤\n• 使用外部提醒和视觉提示\n• Body doubling（和别人一起做）\n• 降低启动门槛："只做2分钟"\n• 对自己温柔一点 💛',
+        自我关怀:
+          "你值得被温柔对待，尤其是被自己 💛\n\n一些小建议：\n• 喝一杯温水\n• 到窗边看看天空\n• 听一首让你安心的歌\n• 对自己说一句肯定的话\n• 允许自己什么都不做\n• 承认自己的感受是有效的\n\n照顾好自己不是自私，是必要的。",
+      };
+      const defaultLocalReplies = [
+        "谢谢你愿意跟我说这些 💚\n\n你的感受是有效的。如果需要，我可以帮你：\n• 把想法整理成清单\n• 拆解一个让你困扰的任务\n• 或者只是陪着你\n\n你想怎么做都可以。",
+        "我听到了 🌿\n\n有时候把事情说出来本身就是一种释放。如果你想进一步探讨，或者需要一些具体的工具来帮助自己，随时告诉我。",
+        "感谢你的信任 ✨\n\n每个人都有自己的节奏和方式。如果你想要一些实用的建议或工具，我在这里。如果你只是需要一个安静的陪伴，我也在这里。",
+      ];
+
+      function getLocalResponse(input) {
+        var lower = input.toLowerCase();
+        for (var key in localResponses) {
+          if (lower.includes(key)) return localResponses[key];
+        }
+        return defaultLocalReplies[
+          Math.floor(Math.random() * defaultLocalReplies.length)
+        ];
+      }
+
+      // ===== MindBloom Agent API Call =====
+      const AGENT_API = (CFG.agentApi || "").replace(/\/+$/, "") || window.location.origin;
+      const DEMO_USER_ID = "demo_user_001";
+
+      async function callAI(userMsg) {
+        try {
+          var resp = await fetch(AGENT_API + "/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_id: DEMO_USER_ID,
+              message: userMsg,
+            }),
+          });
+          if (!resp.ok) throw new Error("Agent error: " + resp.status);
+          var data = await resp.json();
+          return data.reply;
+        } catch (e) {
+          console.error("Agent call failed:", e);
+          return (
+            "AI 服务暂时不可用，请稍后再试 🌿\n\n" +
+            "提示：确保 Agent 服务已启动 (端口 8080)"
+          );
+        }
+      }
+
+      // ===== Chat Logic =====
+      function addMessage(text, type) {
+        var container = document.getElementById("chatContainer");
+        var msg = document.createElement("div");
+        msg.className = "message " + type;
+        msg.innerHTML = text.replace(/\n/g, "<br>");
+        container.appendChild(msg);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      function showTyping() {
+        var container = document.getElementById("chatContainer");
+        var typing = document.createElement("div");
+        typing.className = "typing-indicator";
+        typing.id = "typingIndicator";
+        typing.innerHTML =
+          '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+        container.appendChild(typing);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      function hideTyping() {
+        var el = document.getElementById("typingIndicator");
+        if (el) el.remove();
+      }
+
+      async function sendMessage() {
+        var input = document.getElementById("chatInput");
+        var text = input.value.trim();
+        if (!text) return;
+
+        addMessage(text, "user");
+        input.value = "";
+        input.style.height = "auto";
+        document.getElementById("sendBtn").disabled = true;
+        showTyping();
+
+        var reply = null;
+        if (hasAPI) {
+          reply = await callAI(text);
+        }
+        if (!reply) {
+          // Fallback to local response after short delay
+          await new Promise(function (r) {
+            setTimeout(r, 600 + Math.random() * 500);
+          });
+          reply = getLocalResponse(text);
+        }
+
+        hideTyping();
+        addMessage(reply, "ai");
+        document.getElementById("sendBtn").disabled = false;
+      }
+
+      function sendQuick(text) {
+        document.getElementById("chatInput").value = text;
+        sendMessage();
+      }
+
+      function handleChatKey(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+        var ta = e.target;
+        ta.style.height = "auto";
+        ta.style.height = Math.min(ta.scrollHeight, 120) + "px";
+      }
+
+      // ===== Task Breakdown =====
+      var taskTemplates = {
+        演讲: [
+          { text: "确定演讲的核心主题（1个关键信息）", time: "10 min" },
+          { text: "列出3个支撑要点", time: "15 min" },
+          { text: "为每个要点找1个例子或故事", time: "20 min" },
+          { text: "写开头（吸引注意力的方式）", time: "15 min" },
+          { text: "写结尾（总结+行动号召）", time: "10 min" },
+          { text: "制作幻灯片草稿（关键词+图片）", time: "30 min" },
+          { text: "自己练习讲一遍（计时）", time: "20 min" },
+          { text: "修改不满意的部分", time: "15 min" },
+        ],
+        整理: [
+          { text: "设定计时器 10 分钟（短时段更容易开始）", time: "1 min" },
+          { text: "只处理一个区域（桌面/地面/一个抽屉）", time: "10 min" },
+          { text: "准备三个袋子：保留 / 丢弃 / 待定", time: "5 min" },
+          { text: "快速分类物品到对应袋子", time: "10 min" },
+          { text: "休息 5 分钟（喝水/走动）", time: "5 min" },
+          { text: "继续下一个小区域", time: "10 min" },
+          { text: '处理"丢弃"袋（扔掉/捐赠）', time: "5 min" },
+          { text: "肯定自己：我做到了！", time: "1 min" },
+        ],
+        报告: [
+          { text: "明确报告的目的和读者是谁", time: "10 min" },
+          { text: "列出大纲标题（不用写内容）", time: "15 min" },
+          { text: "收集需要的数据和资料", time: "30 min" },
+          { text: "先写最容易的部分（不必按顺序）", time: "25 min" },
+          { text: "休息", time: "5 min" },
+          { text: "补充剩余章节", time: "30 min" },
+          { text: "写摘要和结论", time: "15 min" },
+          { text: "通读一遍，标记需要修改的地方", time: "15 min" },
+        ],
+        default: [
+          { text: "明确这件事的最终目标是什么", time: "5 min" },
+          { text: "写下完成它需要的第一个最小动作", time: "5 min" },
+          { text: "列出所有需要的资源/材料", time: "10 min" },
+          { text: "把大步骤拆成 15 分钟内能完成的小步骤", time: "15 min" },
+          { text: "给每个小步骤排优先级", time: "5 min" },
+          { text: "从最简单的步骤开始做", time: "15 min" },
+          { text: "完成后奖励自己（哪怕很小）", time: "5 min" },
+        ],
+      };
+
+      function breakdownTask() {
+        var input = document.getElementById("taskInput").value.trim();
+        if (!input) return;
+        var steps = taskTemplates["default"];
+        for (var key in taskTemplates) {
+          if (key !== "default" && input.includes(key)) {
+            steps = taskTemplates[key];
+            break;
+          }
+        }
+        var list = document.getElementById("stepList");
+        list.innerHTML = "";
+        steps.forEach(function (step, i) {
+          var item = document.createElement("div");
+          item.className = "step-item";
+          item.onclick = function () {
+            this.classList.toggle("completed");
+          };
+          item.innerHTML =
+            '<div class="step-check">✓</div><div><div class="step-text">' +
+            step.text +
+            '</div><div class="step-time">⏱ ' +
+            step.time +
+            "</div></div>";
+          item.style.animationDelay = i * 0.06 + "s";
+          list.appendChild(item);
+        });
+      }
+
+      // ===== Focus Timer =====
+      var timerInterval = null;
+      var timerSeconds = 25 * 60;
+      var timerTotal = 25 * 60;
+      var timerRunning = false;
+      var CIRCUMFERENCE = 2 * Math.PI * 110;
+
+      function updateTimerDisplay() {
+        var m = Math.floor(timerSeconds / 60)
+          .toString()
+          .padStart(2, "0");
+        var s = (timerSeconds % 60).toString().padStart(2, "0");
+        document.getElementById("timerDisplay").textContent = m + ":" + s;
+        var progress = document.getElementById("timerProgress");
+        var offset = CIRCUMFERENCE * (1 - timerSeconds / timerTotal);
+        progress.setAttribute("stroke-dashoffset", offset);
+      }
+
+      function toggleTimer() {
+        if (timerRunning) {
+          clearInterval(timerInterval);
+          timerRunning = false;
+          document.getElementById("timerStartBtn").textContent = "继续";
+          document.getElementById("timerLabel").textContent = "已暂停";
+          document.getElementById("timerCircle").className =
+            "timer-circle paused";
+        } else {
+          timerRunning = true;
+          document.getElementById("timerStartBtn").textContent = "暂停";
+          document.getElementById("timerLabel").textContent = "专注中...";
+          document.getElementById("timerCircle").className =
+            "timer-circle running";
+          timerInterval = setInterval(function () {
+            if (timerSeconds <= 0) {
+              clearInterval(timerInterval);
+              timerRunning = false;
+              document.getElementById("timerStartBtn").textContent = "重新开始";
+              document.getElementById("timerLabel").textContent =
+                "🎉 完成！休息一下";
+              document.getElementById("timerCircle").className = "timer-circle";
+              return;
+            }
+            timerSeconds--;
+            updateTimerDisplay();
+          }, 1000);
+        }
+      }
+
+      function resetTimer() {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerSeconds = timerTotal;
+        document.getElementById("timerStartBtn").textContent = "开始专注";
+        document.getElementById("timerLabel").textContent = "准备开始";
+        document.getElementById("timerCircle").className = "timer-circle";
+        updateTimerDisplay();
+      }
+
+      function setTimer(min) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerTotal = min * 60;
+        timerSeconds = timerTotal;
+        document.getElementById("timerStartBtn").textContent = "开始专注";
+        document.getElementById("timerLabel").textContent = "准备开始";
+        document.getElementById("timerCircle").className = "timer-circle";
+        document.querySelectorAll(".preset-btn").forEach(function (b) {
+          b.classList.remove("active");
+        });
+        event.target.classList.add("active");
+        updateTimerDisplay();
+      }
+
+      // ===== Text Simplifier =====
+      function simplifyText() {
+        var input = document.getElementById("simplifyInput").value.trim();
+        if (!input) return;
+        var result = input
+          .replace(/因此|所以|故而|由此可见/g, "所以")
+          .replace(/然而|但是|不过|尽管如此/g, "但是")
+          .replace(/此外|另外|除此之外|与此同时/g, "还有")
+          .replace(/鉴于|考虑到|基于上述原因/g, "因为")
+          .replace(/实施|执行|落实|推进/g, "做")
+          .replace(/进行|开展|予以/g, "")
+          .replace(/具有|具备|拥有/g, "有")
+          .replace(/利用|运用|采用/g, "用")
+          .replace(/确保|保证|保障/g, "让")
+          .replace(/应当|应该|必须|务必/g, "要")
+          .replace(/能够|可以|得以/g, "能")
+          .trim();
+        document.getElementById("simplifyOutput").value = result || input;
+      }
+      function copySimplified() {
+        var text = document.getElementById("simplifyOutput").value;
+        if (text) navigator.clipboard.writeText(text);
+      }
+      function clearSimplify() {
+        document.getElementById("simplifyInput").value = "";
+        document.getElementById("simplifyOutput").value = "";
+      }
+
+      // ===== Emotion Regulator =====
+      var emotions = [
+        {
+          emoji: "😰",
+          name: "焦虑",
+          strategies: [
+            "试试4-7-8呼吸法：吸气4秒，屏息7秒，呼气8秒",
+            "把担忧写下来，写完合上本子",
+            "做一件需要动手的小事（折纸、涂色）",
+            "提醒自己：这个感觉会过去的",
+          ],
+        },
+        {
+          emoji: "😔",
+          name: "低落",
+          strategies: [
+            "允许自己不开心，这没关系",
+            "做一件微小的愉快事（看可爱动物视频）",
+            "到一个让你安心的地方待一会儿",
+            "和一个安全的人说说话",
+          ],
+        },
+        {
+          emoji: "😤",
+          name: "烦躁",
+          strategies: [
+            "用力握紧拳头5秒，然后松开，重复3次",
+            "用冷水洗脸或手握冰块",
+            "快走或跳跃几分钟释放能量",
+            "写下让你烦躁的事，然后撕掉那张纸",
+          ],
+        },
+        {
+          emoji: "🥺",
+          name: "孤独",
+          strategies: [
+            "给自己一个拥抱（认真的）",
+            "听一个温暖的播客或有声书",
+            "在线上社区找一个理解你的人",
+            "记住：独处不等于被遗弃",
+          ],
+        },
+        {
+          emoji: "😵‍💫",
+          name: "超载",
+          strategies: [
+            "立刻减少感官输入（降噪耳机/暗光）",
+            "只做一次深呼吸，专注于呼气",
+            "离开当前环境5分钟",
+            "使用感官休息按钮（右上角）",
+          ],
+        },
+        {
+          emoji: "😶",
+          name: "麻木",
+          strategies: [
+            "触摸不同质感的物品（毛毯/石头/水）",
+            "闻一种你喜欢的气味",
+            "轻轻拍打手臂或腿部",
+            "喝一杯温水，感受温度",
+          ],
+        },
+        {
+          emoji: "🥳",
+          name: "开心",
+          strategies: [
+            "享受这一刻，你值得快乐",
+            "记录下让你开心的事",
+            "分享你的快乐（如果愿意的话）",
+            '把这份感觉存进"好事罐子"',
+          ],
+        },
+        {
+          emoji: "😐",
+          name: "平静",
+          strategies: [
+            "好好珍惜这份平静",
+            "做一些滋养自己的事",
+            "这是练习正念的好时机",
+            "记住这种感觉，下次需要时可以回忆",
+          ],
+        },
+      ];
+
+      (function initEmotions() {
+        var grid = document.getElementById("emotionGrid");
+        emotions.forEach(function (emo, i) {
+          var card = document.createElement("div");
+          card.className = "emotion-card";
+          card.innerHTML =
+            '<div class="emotion-emoji">' +
+            emo.emoji +
+            '</div><div class="emotion-name">' +
+            emo.name +
+            "</div>";
+          card.onclick = function () {
+            selectEmotion(i, card);
+          };
+          grid.appendChild(card);
+        });
+      })();
+
+      function selectEmotion(index, cardEl) {
+        document.querySelectorAll(".emotion-card").forEach(function (c) {
+          c.classList.remove("selected");
+        });
+        cardEl.classList.add("selected");
+        var emo = emotions[index];
+        var panel = document.getElementById("strategyPanel");
+        document.getElementById("strategyTitle").innerHTML =
+          emo.emoji + " 当你感到" + emo.name + "时";
+        var list = document.getElementById("strategyList");
+        list.innerHTML = "";
+        emo.strategies.forEach(function (s, i) {
+          list.innerHTML +=
+            '<li class="strategy-item"><span class="strategy-num">' +
+            (i + 1) +
+            "</span>" +
+            s +
+            "</li>";
+        });
+        panel.classList.add("visible");
+      }
+
+      // ===== Reminders =====
+      function getDefaultReminderTime() {
+        var now = new Date();
+        now.setMinutes(now.getMinutes() + 5);
+        var y = now.getFullYear();
+        var m = String(now.getMonth() + 1).padStart(2, "0");
+        var d = String(now.getDate()).padStart(2, "0");
+        var h = String(now.getHours()).padStart(2, "0");
+        var min = String(now.getMinutes()).padStart(2, "0");
+        return y + "-" + m + "-" + d + "T" + h + ":" + min;
+      }
+
+      (function initReminderTime() {
+        var el = document.getElementById("reminderTime");
+        if (el) el.value = getDefaultReminderTime();
+      })();
+
+      async function createReminder() {
+        var text = document.getElementById("reminderText").value.trim();
+        var time = document.getElementById("reminderTime").value;
+        var type = document.getElementById("reminderType").value;
+        var btn = document.getElementById("createReminderBtn");
+
+        if (!text) {
+          alert("请输入提醒内容");
+          return;
+        }
+        if (!time) {
+          alert("请选择提醒时间");
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "创建中...";
+
+        try {
+          var resp = await fetch(AGENT_API + "/reminders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user_id: DEMO_USER_ID,
+              text: text,
+              remind_at: time + ":00",
+              remind_type: type,
+            }),
+          });
+          if (resp.ok) {
+            document.getElementById("reminderText").value = "";
+            document.getElementById("reminderTime").value =
+              getDefaultReminderTime();
+            await loadReminders();
+          } else {
+            alert("创建失败，请检查 Agent 服务是否运行");
+          }
+        } catch (e) {
+          alert("创建失败: " + e.message);
+        }
+
+        btn.disabled = false;
+        btn.textContent = "创建提醒";
+      }
+
+      async function loadReminders() {
+        var list = document.getElementById("reminderList");
+        try {
+          var resp = await fetch(
+            AGENT_API + "/reminders?user_id=" + DEMO_USER_ID,
+          );
+          if (!resp.ok) throw new Error("Failed to load");
+          var data = await resp.json();
+          var reminders = data.reminders || [];
+
+          if (reminders.length === 0) {
+            list.innerHTML =
+              '<div class="reminder-empty">还没有提醒，在上方创建一个吧 🌿</div>';
+            return;
+          }
+
+          list.innerHTML = "";
+          reminders.forEach(function (r) {
+            var card = document.createElement("div");
+            card.className = "reminder-card" + (r.fired ? " fired" : "");
+
+            var timeStr = r.remind_at;
+            try {
+              var d = new Date(timeStr);
+              timeStr =
+                d.getMonth() +
+                1 +
+                "/" +
+                d.getDate() +
+                " " +
+                String(d.getHours()).padStart(2, "0") +
+                ":" +
+                String(d.getMinutes()).padStart(2, "0");
+            } catch (e) {}
+
+            var typeMap = {
+              break: "休息",
+              task: "任务",
+              medication: "吃药",
+              water: "喝水",
+              custom: "自定义",
+              system: "系统",
+            };
+
+            card.innerHTML =
+              '<div class="reminder-card-left">' +
+              '<div class="reminder-card-text">' +
+              r.text +
+              "</div>" +
+              '<div class="reminder-card-meta">' +
+              "<span>⏰ " +
+              timeStr +
+              "</span>" +
+              '<span class="reminder-card-type">' +
+              (typeMap[r.remind_type] || r.remind_type) +
+              "</span>" +
+              '<span class="reminder-card-status' +
+              (r.fired ? " fired" : "") +
+              '">' +
+              (r.fired ? "✅ 已提醒" : "⏳ 待提醒") +
+              "</span>" +
+              "</div>" +
+              "</div>" +
+              '<button class="reminder-btn danger" onclick="deleteReminder(\'' +
+              r.id +
+              "')\">删除</button>";
+            list.appendChild(card);
+          });
+        } catch (e) {
+          list.innerHTML =
+            '<div class="reminder-empty">加载失败，请确保 Agent 服务已启动 (端口 8080)</div>';
+        }
+      }
+
+      async function deleteReminder(id) {
+        try {
+          var resp = await fetch(AGENT_API + "/reminders/" + id, {
+            method: "DELETE",
+          });
+          if (resp.ok) {
+            await loadReminders();
+          }
+        } catch (e) {
+          console.error("Delete failed:", e);
+        }
+      }
+
+      // Keyboard nav
+      document.querySelectorAll(".nav-item").forEach(function (item) {
+        item.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            item.click();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+# Python
+**/venv/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+**/node_modules/
+.npm/
+.cache/
+
+# SQLite
+*.db
+*.sqlite
+
+# Vercel
+.vercel/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env files (secrets)
+.env
+!.env.example
+
+# xiaozhi-client 缓存
+mindbloom-client/xiaozhi.cache.json
+mindbloom-client/tool-calls.jsonl
+
+# Logs
+*.log
+/tmp/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Trae IDE auto-generated skills
+.skills/
